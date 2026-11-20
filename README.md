@@ -1,16 +1,15 @@
-
-# 📰 AI News Aggregator & Curator
+# 📰 AI Newspaper
 
 An automated, end-to-end data pipeline and AI engineering project that aggregates the latest news from top AI companies (OpenAI, Anthropic) and YouTube creators, enriches the content, and uses LLMs to summarize, personalize, and rank a daily email digest.
 
 ## 🎯 Project Overview
-Staying up-to-date with the fast-moving AI landscape is difficult. This project automates the entire workflow: it scrapes raw RSS feeds and YouTube channels, extracts full-text articles and video transcripts, generates AI summaries, and ranks the content based on a personalized user profile. Finally, it formats the top-ranked articles into a beautifully styled HTML email and delivers it directly to the inbox.
+Staying up-to-date with the fast-moving AI landscape is difficult. **AI Newspaper** automates the entire workflow: it scrapes raw RSS feeds and YouTube channels, extracts full-text articles and video transcripts, generates AI summaries, and ranks the content based on a personalized user profile. Finally, it formats the top-ranked articles into a beautifully styled HTML email and delivers it directly to the inbox every morning.
 
-This project demonstrates a production-ready approach to **LLM Orchestration**, **Data Engineering**, and **Cloud Database Management**.
+This project demonstrates a production-ready approach to **LLM Orchestration**, **Data Engineering**, **Cloud Database Management**, and **CI/CD Automation**.
 
 ## 🏗️ System Architecture & Pipeline
 
-The system is built as a modular, 4-stage pipeline:
+The system is built as a modular, 5-stage pipeline orchestrated by `main.py`:
 
 ```text
 [Stage 1: Ingestion]
@@ -21,11 +20,11 @@ RSS Feeds (OpenAI, Anthropic) & YouTube Channels
 Full-text Markdown & Video Transcripts extraction
       │
       ▼
-[Stage 3: AI Summarization] (Groq API / Llama-3)
+[Stage 3: AI Summarization] (Groq API)
 Generating concise digests for each piece of content
       │
       ▼
-[Stage 4: Personalization & Curation] (Groq API / Llama-3)
+[Stage 4: Personalization & Curation] (Groq API )
 Ranking digests based on user profile & generating email intro
       │
       ▼
@@ -38,9 +37,10 @@ HTML Email Digest sent to user
 - **Multi-Source Ingestion:** Scrapes RSS feeds (OpenAI, Anthropic) and YouTube channel feeds using `feedparser` and the YouTube RSS API.
 - **Intelligent Enrichment:** Uses IBM's **Docling** to convert complex web articles into clean Markdown, and `youtube-transcript-api` to extract video captions.
 - **Stateful Database Tracking:** Uses SQLAlchemy to track the state of every article (e.g., "needs transcript," "needs summary," "needs ranking") to avoid duplicating work and wasting API credits.
-- **AI Summarization:** Leverages **Groq (Llama-3.3-70B)** for high-speed, low-latency summarization, enforcing strict JSON outputs using Pydantic.
+- **AI Summarization:** Leverages **Groq (openai/gpt-oss-120b)** for high-speed, low-latency summarization, enforcing strict JSON outputs using Pydantic.
 - **Personalized Curation:** An AI Curator Agent scores and ranks content (0.0-10.0) based on a customizable user profile (interests, expertise level, preferences).
-- **Beautiful Email Delivery:** Dynamically generates a responsive HTML email template with the AI-written introduction, article summaries, and direct links.
+- **Beautiful Email Delivery:** Dynamically generates a responsive HTML email template with the AI-written introduction, positive daily affirmations, article summaries, and direct links.
+- **Fully Automated CI/CD:** Deployed via **GitHub Actions** to run on a daily cron schedule with zero manual intervention.
 
 ## 🛠️ Tech Stack & Skills Demonstrated
 
@@ -51,7 +51,7 @@ HTML Email Digest sent to user
 - **Pydantic** (Data validation and strict LLM output schemas)
 
 **AI & Data Extraction:**
-- **Groq API** (Llama-3.3-70B & GPT-OSS models)
+- **Groq API** (openai/gpt-oss-120b)
 - **Docling** (Advanced document parsing and Markdown conversion)
 - **feedparser** (RSS parsing)
 - **youtube-transcript-api** (Caption extraction)
@@ -59,26 +59,30 @@ HTML Email Digest sent to user
 **Infrastructure & DevOps:**
 - **PostgreSQL** (Relational Database)
 - **Supabase** (Cloud Database Hosting)
+- **GitHub Actions** (CI/CD and Scheduled Cron Jobs)
 - **SMTP / Gmail** (Email delivery)
 - **Docker** (Local database setup via Docker Compose)
-- **Git / GitHub** (Version control)
 
 ## 📂 Project Structure
 
 ```text
-my-ai-newspaper/
+AI-Newspaper/
+├── .github/
+│   └── workflows/
+│       └── daily-pipeline.yml  # GitHub Actions schedule configuration
 ├── app/
-│   ├── agent/               # AI Agents (DigestAgent, CuratorAgent, EmailAgent)
-│   ├── database/            # SQLAlchemy models, connection, and Repository pattern
-│   ├── profiles/            # User profile definitions for personalization
-│   ├── scrapers/            # Data ingestion (YouTube, OpenAI, Anthropic)
-│   ├── services/            # Pipeline runners (process_digests, process_email, etc.)
-│   └── config.py            # Configuration and YouTube channel IDs
-├── .env.example             # Environment variable template
-├── pyproject.toml           # Project dependencies and metadata
-├── docker-compose.yml       # Local Postgres setup (optional)
+│   ├── agent/                  # AI Agents (DigestAgent, CuratorAgent, EmailAgent)
+│   ├── database/               # SQLAlchemy models, connection, and Repository pattern
+│   ├── profiles/               # User profile definitions for personalization
+│   ├── scrapers/               # Data ingestion (YouTube, OpenAI, Anthropic)
+│   ├── services/               # Pipeline stage runners (process_digests, process_email, etc.)
+│   └── config.py               # Configuration and YouTube channel IDs
+├── .env.example                # Environment variable template
+├── main.py                     # Master orchestrator/scheduler script
+├── pyproject.toml              # Project dependencies and metadata
+├── docker-compose.yml          # Local Postgres setup (optional)
 ├── README.md
-└── runner.py                # Main orchestration script for Stage 1
+└── uv.lock
 ```
 
 ## 🚀 Getting Started
@@ -87,14 +91,14 @@ my-ai-newspaper/
 - Python 3.10+
 - [uv](https://docs.astral.sh/uv/) installed
 - A Supabase account (or local PostgreSQL)
-- A Groq API Key (Free tier available at console.groq.com)
+- A Groq API Key (Free tier available at [console.groq.com](https://console.groq.com))
 - A Gmail account with an App Password
 
 ### 2. Installation
 Clone the repository and install dependencies:
 ```bash
-git clone https://github.com/yourusername/my-ai-newspaper.git
-cd my-ai-newspaper
+git clone https://github.com/yourusername/AI-Newspaper.git
+cd AI-Newspaper
 uv sync
 ```
 
@@ -126,42 +130,36 @@ Create the necessary tables in your Supabase database:
 python -m app.database.create_table
 ```
 
-## 🏃‍♂️ Running the Pipeline
+## 🏃‍♂️ Running the Pipeline Locally
 
-Because the pipeline involves heavy processing and API calls, it is split into distinct, runnable stages.
+The entire process is orchestrated by the `main.py` file in the root directory. To run the full end-to-end pipeline locally:
 
-**Stage 1: Fetch new metadata**
 ```bash
-python -m app.runner
+python main.py
 ```
 
-**Stage 2: Enrich content (Fetch transcripts & markdown)**
-```bash
-python app/services/process_youtube_transcripts.py
-python app/services/process_anthropic_markdown.py
-```
+Alternatively, if you want to test individual stages, you can run the specific workers inside the `app/services/` folder.
 
-**Stage 3: Generate AI Digests**
-```bash
-python app/services/process_digests.py
-```
+## ☁️ Deployment & Automation (GitHub Actions)
 
-**Stage 4: Rank and Send Email**
-```bash
-python app/services/process_email.py
-```
+This project is fully automated using GitHub Actions. 
+
+The workflow file (`.github/workflows/daily-pipeline.yml`) is configured to:
+1. Spin up a fresh Ubuntu runner (with 7GB of RAM to handle Docling's memory needs).
+2. Install `uv` and sync all dependencies.
+3. Securely inject environment variables using GitHub Repository Secrets.
+4. Execute `main.py` on a daily cron schedule (e.g., `0 8 * * *` for 8:00 AM UTC).
+
+To configure this for your own fork:
+1. Go to your repository on GitHub.
+2. Navigate to **Settings > Secrets and variables > Actions**.
+3. Add all the variables from your local `.env` file as **New repository secrets**.
+4. The pipeline will now run automatically every day without any manual intervention.
 
 ## 🧠 Engineering Decisions & Challenges
 
 - **The "RSS 15-Video Limit":** YouTube's RSS feeds only provide the 15 most recent videos. The pipeline handles this by running frequently enough to catch new uploads before they fall off the feed, while the PostgreSQL database acts as a permanent historical archive to prevent re-scraping.
 - **Cost and Rate-Limit Optimization:** Processing full-text articles via LLMs can get expensive. The system uses a `__UNAVAILABLE__` marker for failed transcripts to avoid retrying dead links, and truncates content to 8,000 characters per LLM call to optimize context windows and cost.
 - **Reliable JSON Parsing:** Instead of relying on prompt engineering alone to get structured data from the LLM, the system uses Pydantic models and Groq's JSON mode to guarantee that the AI returns exact schemas, eliminating parsing errors.
+- **Overcoming Free-Tier Memory Limits:** Deploying Docling (which requires 2-4GB RAM) on free web hosting platforms (like Render or Hugging Face Spaces) resulted in Out-Of-Memory crashes. The architecture was migrated to GitHub Actions, which provides 7GB of RAM for free, ensuring reliable daily executions.
 
----
-
-### Author
-**Ayesha** - *AI Engineer*
-- [LinkedIn](https://linkedin.com/in/yourprofile)
-- [GitHub](https://github.com/yourusername)
-
-*(Feel free to connect with me to discuss AI engineering, LLM orchestration, or this project!)*
