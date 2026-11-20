@@ -1,0 +1,22 @@
+[project]
+name = "my-ai-newspaper"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "docling>=2.150.1",
+    "feedparser>=6.0.14",
+    "markdown>=3.10.3",
+    "openai>=3.50.0",
+    "psycopg2-binary>=2.9.13",
+    "pydantic>=2.14.3",
+    "python-dotenv>=1.2.4",
+    "requests>=2.34.2",
+    "sqlalchemy>=2.0.57",
+    "youtube-transcript-api>=1.2.5",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
+]
