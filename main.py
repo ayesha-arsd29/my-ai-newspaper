@@ -1,4 +1,4 @@
-from app.daily_runner import run_daily_pipeline
+from daily_runner import run_daily_pipeline
 
 
 def main(hours: int = 24, top_n: int = 10):
