@@ -30,4 +30,4 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           MY_EMAIL: ${{ secrets.MY_EMAIL }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
-        run: uv run python -m app.services.run_pipeline
+        run: uv run python -m app.services.main
